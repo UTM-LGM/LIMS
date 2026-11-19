@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "yVZ7cmtaloM=",
+  "success": true,
+  "projectFilePath": "C:\\Projects\\LIMS\\backend\\LIMS.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\zulaikha\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.16\\microsoft.aspnetcore.openapi.9.0.16.nupkg.sha512",
+    "C:\\Users\\zulaikha\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
