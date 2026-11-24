@@ -51,6 +51,11 @@ obj/
 .vs/
 appsettings.Development.json
 
+# Angular / Node
+node_modules/
+dist/
+.angular/
+
 # Environment & Secrets
 .env
 
