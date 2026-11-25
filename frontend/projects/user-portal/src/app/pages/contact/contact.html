@@ -1,1 +1,121 @@
-<p>contact works!</p>
+<section class="page-banner">
+  <div class="container">
+    <span class="badge">CUSTOMER & TECHNICAL SUPPORT</span>
+    <h1>Contact Us</h1>
+    <p>
+      Have questions regarding test standards, sample submission requirements, or quotation requests? Our technical team is ready to assist.
+    </p>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container contact-grid">
+    <!-- Left Column: MRB Office Info -->
+    <div class="info-column">
+      <div class="info-card">
+        <h3>Malaysian Rubber Board (MRB)</h3>
+        <p class="dept-name">Technical & Advisory Services Division</p>
+
+        <div class="info-item">
+          <span class="icon">📍</span>
+          <div>
+            <strong>Laboratory & Sample Reception</strong>
+            <p>
+              RRIM Research Station Sungai Buloh,<br>
+              47000 Sungai Buloh, Selangor Darul Ehsan, Malaysia.
+            </p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">📞</span>
+          <div>
+            <strong>Telephone & Helpdesk</strong>
+            <p>+603-6145 9400 / +603-9206 2000</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">✉️</span>
+          <div>
+            <strong>Email Support</strong>
+            <p>technicalservices@lgm.gov.my</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">🕒</span>
+          <div>
+            <strong>Operating Hours</strong>
+            <p>Monday – Friday: 8:00 AM – 5:00 PM (MYT)<br>Closed on Weekends & Public Holidays</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Contact Form -->
+    <div class="form-card">
+      @if (!submitted) {
+        <h3>Send Us a Message</h3>
+        <p class="form-sub">Fill out the form below and our officer will respond within 1–3 working days.</p>
+
+        <form (ngSubmit)="submitContact()">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" [(ngModel)]="contactForm.fullName" name="fullName" placeholder="e.g. Ahmad Faizal" />
+            </div>
+
+            <div class="form-group">
+              <label>Company / Organization</label>
+              <input type="text" [(ngModel)]="contactForm.company" name="company" placeholder="e.g. Top Rubber Manufacturing Sdn Bhd" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" [(ngModel)]="contactForm.email" name="email" placeholder="name@company.com" />
+            </div>
+
+            <div class="form-group">
+              <label>Contact Number</label>
+              <input type="tel" [(ngModel)]="contactForm.phone" name="phone" placeholder="+60 12-345 6789" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Subject</label>
+            <select [(ngModel)]="contactForm.subject" name="subject">
+              <option value="General Technical Inquiry">General Technical Inquiry</option>
+              <option value="Testing & Calibration Scope">Testing & Calibration Scope</option>
+              <option value="Quotation & Billing Support">Quotation & Billing Support</option>
+              <option value="Sample Submission & Logistics">Sample Submission & Logistics</option>
+              <option value="Portal Account Assistance">Portal Account Assistance</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Message <span class="req">*</span></label>
+            <textarea rows="4" [(ngModel)]="contactForm.message" name="message" placeholder="Describe your inquiry, test standard, or sample type..."></textarea>
+          </div>
+
+          @if (errorMessage) {
+            <div class="error-box">{{ errorMessage }}</div>
+          }
+
+          <button type="submit" class="btn-submit">Send Message</button>
+        </form>
+      } @else {
+        <div class="success-box">
+          <div class="check-circle">✓</div>
+          <h3>Message Sent Successfully</h3>
+          <p>
+            Thank you, <strong>{{ contactForm.fullName }}</strong>. Your inquiry regarding <em>{{ contactForm.subject }}</em> has been routed to our technical support team.
+          </p>
+          <button type="button" class="btn-submit" (click)="resetForm()">Send Another Message</button>
+        </div>
+      }
+    </div>
+  </div>
+</section>

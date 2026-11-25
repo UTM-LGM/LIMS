@@ -1,0 +1,39 @@
+<div class="portal-shell">
+  <!-- Top Header Bar (Spesifikasi 5.1) -->
+  <header class="portal-header">
+    <div class="system-title">MRB TECHNICAL SERVICES SYSTEM</div>
+    <div class="header-actions">
+      <div class="user-badge">
+        <span class="user-dot"></span>
+        <span>USER: <strong>{{ userId }}</strong></span>
+      </div>
+      <button type="button" class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="portal-body">
+    <!-- Left Sidebar Navigation (Spesifikasi 5.1) -->
+    <aside class="portal-sidebar">
+      <div class="sidebar-label">MENU PORTAL</div>
+      <nav class="sidebar-nav">
+        @for (item of menuItems; track item.route) {
+          <a 
+            [routerLink]="item.route" 
+            routerLinkActive="active-menu" 
+            class="nav-item">
+            <span class="nav-left">
+              <span class="nav-icon">{{ item.icon }}</span>
+              <span>{{ item.label }}</span>
+            </span>
+            <span class="nav-chevron">⌄</span>
+          </a>
+        }
+      </nav>
+    </aside>
+
+    <!-- Main Form Area -->
+    <main class="portal-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

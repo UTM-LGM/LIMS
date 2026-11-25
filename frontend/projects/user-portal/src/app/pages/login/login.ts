@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 declare const grecaptcha: any;
 
@@ -21,7 +21,6 @@ export class Login implements AfterViewInit {
   captchaToken = '';
   widgetId: number | null = null;
 
-  // Kunci Ujian Rasmi Google reCAPTCHA v2 (Berfungsi di localhost tanpa daftar domain)
   private readonly siteKey = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
 
   formData = {
@@ -30,7 +29,7 @@ export class Login implements AfterViewInit {
     rememberMe: false
   };
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef, private router: Router) {}
 
   ngAfterViewInit() {
     this.renderRecaptcha();
@@ -83,6 +82,7 @@ export class Login implements AfterViewInit {
 
     this.formError = '';
     this.loginStatus = 'success';
+    this.router.navigate(['/portal/inquiry']);
   }
 
   resetDemo() {

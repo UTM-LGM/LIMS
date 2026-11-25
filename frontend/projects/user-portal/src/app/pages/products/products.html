@@ -1,1 +1,84 @@
 <p>products works!</p>
+<section class="page-banner">
+  <div class="container">
+    <span class="badge">SERVICE CATALOG & SCHEDULE OF FEES</span>
+    <h1>Product & Price Directory</h1>
+    <p>
+      Browse our accredited test parameters, standard test methods, and published rates. Sign in to build an itemized quotation or submit a custom inquiry.
+    </p>
+  </div>
+</section>
+
+<section class="catalog-section">
+  <div class="container">
+    <!-- Filter Bar -->
+    <div class="filter-panel">
+      <div class="search-box">
+        <label>Search Parameter or Method</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          placeholder="e.g. Tensile, ASTM D412, Protein, ISO..." />
+      </div>
+
+      <div class="filter-select">
+        <label>Service Category</label>
+        <select [(ngModel)]="selectedCategory">
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-select">
+        <label>Sample Type</label>
+        <select [(ngModel)]="selectedSample">
+          @for (st of sampleTypes; track st) {
+            <option [value]="st">{{ st }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Pricing Table -->
+    <div class="table-card">
+      <div class="table-meta">
+        <span>Showing <strong>{{ filteredCatalog.length }}</strong> service item(s)</span>
+        <a routerLink="/login" class="quote-cta-link">Sign in to Get Official Quote →</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>SERVICE CATEGORY</th>
+              <th>TEST PARAMETER / SERVICE</th>
+              <th>TEST METHOD</th>
+              <th>SAMPLE TYPE</th>
+              <th class="text-right">LOCAL RATE (RM)</th>
+              <th class="text-right">OVERSEAS (USD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of filteredCatalog; track item.parameter) {
+              <tr>
+                <td><span class="cat-pill">{{ item.category }}</span></td>
+                <td class="font-medium">{{ item.parameter }}</td>
+                <td class="text-muted">{{ item.method }}</td>
+                <td>{{ item.sample }}</td>
+                <td class="text-right font-semibold">{{ item.priceRM | number:'1.2-2' }}</td>
+                <td class="text-right text-muted">{{ item.priceUSD | number:'1.2-2' }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  No matching test parameters found. Try adjusting your filters or <a routerLink="/contact">contact our technical team</a> for custom scope inquiries.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

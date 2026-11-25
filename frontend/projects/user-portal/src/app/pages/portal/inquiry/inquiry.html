@@ -1,0 +1,244 @@
+<div class="inquiry-wrapper">
+  <!-- Kad 1: Select Services -->
+  <section class="panel-card">
+    <div class="panel-label">SELECT SERVICES</div>
+    <div class="service-tabs">
+      @for (srv of services; track srv) {
+        <button 
+          type="button" 
+          class="service-pill" 
+          [class.active]="selectedService === srv"
+          (click)="selectService(srv)">
+          {{ srv }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <!-- Kad 2: Sample Type / Test Item Type -->
+  <section class="panel-card">
+    <div class="panel-label">SAMPLE TYPE</div>
+    <div class="sample-row">
+      <select [(ngModel)]="selectedSampleType" class="sample-select">
+        @for (st of sampleTypes; track st) {
+          <option [value]="st">{{ st }}</option>
+        }
+      </select>
+    </div>
+  </section>
+
+  <!-- Kad 3: Parameter & Calculation Table -->
+  <section class="panel-card">
+    <div class="table-responsive">
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>PARAMETER</th>
+            <th>TEST METHOD</th>
+            <th class="text-right">CHARGE (RM)</th>
+            <th class="text-center" style="width: 90px;">QTY</th>
+            <th class="text-right">SUBTOTAL (RM)</th>
+            <th class="text-center" style="width: 75px;">DELETE</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of inquiryRows; track $index) {
+            <tr>
+              <td class="font-medium">{{ row.parameter }}</td>
+              <td class="text-muted">{{ row.testMethod }}</td>
+              <td class="text-right">{{ row.charge | number:'1.2-2' }}</td>
+              <td class="text-center">
+                <input 
+                  type="number" 
+                  [(ngModel)]="row.qty" 
+                  min="1" 
+                  max="99" 
+                  class="qty-input" />
+              </td>
+              <td class="text-right font-semibold">{{ (row.charge * row.qty) | number:'1.2-2' }}</td>
+              <td class="text-center">
+                <button type="button" class="btn-delete-row" (click)="removeRow($index)" title="Remove item">✕</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-row">
+                No test parameters selected yet. Click <strong>+ Add Item</strong> below to choose from MRB test catalog.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-actions">
+      <button type="button" class="btn-add-item" (click)="openLookupModal()">
+        + Add Item
+      </button>
+    </div>
+  </section>
+
+  <!-- Kad 4: Additional Section (Others) -->
+  <section class="panel-card">
+    <div class="others-header">
+      <span class="panel-label" style="margin-bottom: 0;">OTHERS : PLEASE SPECIFY</span>
+      <span 
+        class="guidance-icon" 
+        title="For parameter is not within scope, please specify and attached image if needed">
+        ?
+      </span>
+    </div>
+    <textarea 
+      [(ngModel)]="othersSpecify" 
+      rows="2" 
+      class="others-input"
+      placeholder="Type parameters outside of scope here..."></textarea>
+
+    <div class="attachment-row">
+      <label class="file-upload-btn">
+        📎 Attach Reference Image / Spec
+        <input type="file" accept="image/*,.pdf" (change)="onFileSelected($event)" hidden />
+      </label>
+      @if (selectedFileName) {
+        <span class="file-name">{{ selectedFileName }}</span>
+      }
+    </div>
+  </section>
+
+  <!-- Kad 5: Summary & Action Buttons (Footer Area) -->
+  <section class="summary-bar">
+    <div class="total-display-box">
+      <div class="total-label">TOTAL CHARGE</div>
+      <div class="total-amount">
+        RM {{ totalChargeRM | number:'1.2-2' }}
+        @if (isOverseasUser) {
+          <span class="usd-sub">(USD {{ totalChargeUSD | number:'1.2-2' }})</span>
+        }
+      </div>
+    </div>
+
+    <div class="footer-right-controls">
+      <label class="overseas-toggle">
+        <input type="checkbox" [(ngModel)]="isOverseasUser" />
+        <span>Overseas User (Show USD)</span>
+      </label>
+
+      <div class="action-buttons">
+        <button 
+          type="button" 
+          class="btn-send-inquiry" 
+          [disabled]="!isOutOfScope"
+          (click)="sendInquiry()">
+          Send Inquiry
+        </button>
+        <button 
+          type="button" 
+          class="btn-get-quote" 
+          [disabled]="!isWithinScope"
+          (click)="getQuote()">
+          Get Quote
+        </button>
+      </div>
+    </div>
+  </section>
+
+  @if (toastMessage) {
+    <div class="toast-banner">
+      ✓ {{ toastMessage }}
+    </div>
+  }
+</div>
+
+<!-- 5.1.1 Modal Pop-up: Item Lookup (Test Parameter, Test Method Lookup) -->
+@if (isLookupOpen) {
+  <div class="modal-backdrop" (click)="closeLookupModal()">
+    <div class="lookup-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Item Lookup — Test Parameter & Method</h3>
+        <button type="button" class="btn-close-modal" (click)="closeLookupModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Search Filters Component -->
+        <div class="filter-grid">
+          <div class="filter-field">
+            <label>Test Parameter</label>
+            <input 
+              type="text" 
+              [(ngModel)]="lookupFilter.parameter" 
+              placeholder="e.g. Tensile, Protein..." />
+          </div>
+          <div class="filter-field">
+            <label>Sample Type</label>
+            <select [(ngModel)]="lookupFilter.sampleType">
+              <option value="">All Sample Types</option>
+              @for (st of sampleTypes; track st) {
+                <option [value]="st">{{ st }}</option>
+              }
+            </select>
+          </div>
+          <div class="filter-field">
+            <label>Test Method</label>
+            <input 
+              type="text" 
+              [(ngModel)]="lookupFilter.testMethod" 
+              placeholder="e.g. ASTM D412, ISO..." />
+          </div>
+        </div>
+
+        <div class="filter-actions">
+          <button type="button" class="btn-modal-primary" (click)="searchCatalog()">Search</button>
+          <button type="button" class="btn-modal-success" (click)="addSelectedItems()">Add</button>
+          <button type="button" class="btn-modal-secondary" (click)="resetLookupFilters()">Reset</button>
+        </div>
+
+        <!-- Data Grid / Table Component -->
+        <div class="lookup-table-wrap">
+          <table class="lookup-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;"></th>
+                <th>Test Parameter</th>
+                <th>Test Method</th>
+                <th>Sample Type</th>
+                <th class="text-right">Charge (RM)</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of filteredCatalog; track item.id) {
+                <tr (click)="item.selected = !item.selected" [class.row-checked]="item.selected">
+                  <td class="text-center" (click)="$event.stopPropagation()">
+                    <input type="checkbox" [(ngModel)]="item.selected" />
+                  </td>
+                  <td>{{ item.parameter }}</td>
+                  <td>{{ item.testMethod }}</td>
+                  <td>{{ item.sampleType }}</td>
+                  <td class="text-right">{{ item.charge | number:'1.2-2' }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="empty-row">No matching test parameters found.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Status Component & Pagination -->
+        <div class="lookup-footer">
+          <div class="pagination-controls">
+            <button type="button" disabled>|<</button>
+            <button type="button" disabled><</button>
+            <span>Page <strong>1</strong> of 1</span>
+            <button type="button" disabled>></button>
+            <button type="button" disabled>>|</button>
+            <button type="button" (click)="searchCatalog()" title="Refresh">↻</button>
+          </div>
+          <div class="record-status">
+            Displaying 1 - {{ filteredCatalog.length }} of {{ filteredCatalog.length }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
